@@ -1,10 +1,12 @@
 package com.ppp65isking.ytmusicfortv.innertube
 
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
+import kotlinx.serialization.json.put
 
 /** A resolved, playable audio stream. URLs expire in ~6h — resolve fresh on
  *  every play, never cache them. */
