@@ -92,6 +92,24 @@ class InnerTubeClient(
         }
     }
 
+    /**
+     * Bootstrap visitorData before any player call. On a fresh install it
+     * is null, and a player call sent without it answers LOGIN_REQUIRED —
+     * the exact failure seen on the TV on first tap. A cheap `guide` call
+     * harvests it (post() stores it from every responseContext); `browse`
+     * is the fallback. Best-effort: if both fail, the player call still
+     * runs and StreamResolver retries once after the harvest.
+     */
+    fun ensureVisitorData() {
+        if (visitorData != null) return
+        runCatching { post("guide", Clients.WEB_REMIX) }
+        if (visitorData == null) {
+            runCatching {
+                post("browse", Clients.WEB_REMIX) { put("browseId", "FEmusic_home") }
+            }
+        }
+    }
+
     /** Search. `filter` is one of [SearchParams] (null = unfiltered). */
     fun search(query: String, filter: String? = null): JsonObject =
         post("search", Clients.WEB_REMIX) {

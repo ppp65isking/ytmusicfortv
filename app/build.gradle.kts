@@ -62,6 +62,11 @@ dependencies {
     implementation("androidx.tv:tv-material:1.1.0")
     implementation("androidx.tv:tv-foundation:1.0.0")
 
+    // Material icons (BOM-managed, no version) for the icon-only nav rail
+    // and play/pause controls. Rendered via foundation Image + ColorFilter
+    // tint — no material/material3 Icon composable needed.
+    implementation("androidx.compose.material:material-icons-extended")
+
     // Media3 — audio-only playback (ExoPlayer + HLS + MediaSession).
     implementation("androidx.media3:media3-exoplayer:1.11.1")
     implementation("androidx.media3:media3-session:1.11.1")

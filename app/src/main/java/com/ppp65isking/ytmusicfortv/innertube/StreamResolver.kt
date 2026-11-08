@@ -1,5 +1,6 @@
 package com.ppp65isking.ytmusicfortv.innertube
 
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
@@ -25,18 +26,21 @@ data class StreamResult(
  *
  * Phase 1 proof: itag 251 (Opus ~148 kbps) range-fetched at 1.18 MB/s and
  * decoded cleanly; HLS master + itag-140 AAC rendition likewise.
+ *
+ * First-run trap (hit on the TV 2026-11-08): a player call sent without
+ * visitorData answers LOGIN_REQUIRED. So resolve() primes visitorData
+ * first and retries once on LOGIN_REQUIRED — the failed call harvests it.
  */
 class StreamResolver(private val client: InnerTubeClient) {
 
     fun resolve(videoId: String): StreamResult {
-        val player = client.post("player", Clients.VISIONOS) {
-            put("videoId", videoId)
-            put("contentCheckOk", true)
-            put("racyCheckOk", true)
+        client.ensureVisitorData()
+        var player = playerCall(videoId)
+        var status = playabilityStatus(player)
+        if (status == "LOGIN_REQUIRED") {
+            player = playerCall(videoId)
+            status = playabilityStatus(player)
         }
-        val status = player["playabilityStatus"]
-            ?.jsonObject?.get("status")
-            ?.jsonPrimitive?.contentOrNull
         require(status == "OK") { "player playabilityStatus=$status for $videoId" }
         val streamingData = player["streamingData"]?.jsonObject
             ?: error("player response has no streamingData for $videoId")
@@ -59,4 +63,16 @@ class StreamResolver(private val client: InnerTubeClient) {
                 ?.jsonPrimitive?.longOrNull,
         )
     }
+
+    private fun playerCall(videoId: String): JsonObject =
+        client.post("player", Clients.VISIONOS) {
+            put("videoId", videoId)
+            put("contentCheckOk", true)
+            put("racyCheckOk", true)
+        }
+
+    private fun playabilityStatus(player: JsonObject): String? =
+        player["playabilityStatus"]
+            ?.jsonObject?.get("status")
+            ?.jsonPrimitive?.contentOrNull
 }
