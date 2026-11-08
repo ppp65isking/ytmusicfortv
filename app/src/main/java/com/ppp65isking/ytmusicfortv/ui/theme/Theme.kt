@@ -26,7 +26,6 @@ private val YtmDarkColors = darkColorScheme(
     onSurface = Color(0xFFF5F3FF),
     surfaceVariant = Color(0xFF221A3D),
     onSurfaceVariant = Color(0xFFC4B5FD),
-    outline = Color(0xFFFFFFFF).copy(alpha = 0.14f),
 )
 
 @Composable
