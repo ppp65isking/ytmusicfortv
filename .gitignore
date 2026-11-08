@@ -1,0 +1,17 @@
+# Gradle / Android
+.gradle/
+local.properties
+build/
+*.apk
+*.aab
+
+# YTM lab harness (proves the playback path; not part of the app)
+.venv/
+fixtures/
+probe_*.py
+verify_*.py
+
+# OS / editor
+.DS_Store
+.idea/
+*.iml
