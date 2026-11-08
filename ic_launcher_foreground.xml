@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- White music note on the purple background (see ic_launcher_background). -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M54,13.5v47.475c-2.655,-1.53 -5.715,-2.475 -9,-2.475 -9.945,0 -18,8.055 -18,18s8.055,18 18,18 18,-8.055 18,-18V31.5h18V13.5h-27z" />
+</vector>
