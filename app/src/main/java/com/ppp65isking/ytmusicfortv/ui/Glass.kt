@@ -3,6 +3,7 @@ package com.ppp65isking.ytmusicfortv.ui
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -12,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,19 +45,24 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
 /**
@@ -198,56 +206,65 @@ private fun renderGlassBackground(width: Int, height: Int): ImageBitmap {
     val canvas = Canvas(bitmap)
     val w = width.toFloat()
     val h = height.toFloat()
-    // Purple orb, top-left.
-    canvas.drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                Color(0xFF7C3AED).copy(alpha = 0.55f),
-                Color.Transparent,
+    // The low-level Canvas only draws with Paint, not Brush — so draw the
+    // orbs through a CanvasDrawScope, whose drawCircle/drawRect take Brush.
+    CanvasDrawScope().draw(
+        density = Density(1f),
+        layoutDirection = LayoutDirection.Ltr,
+        canvas = canvas,
+        size = Size(w, h),
+    ) {
+        // Purple orb, top-left.
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(
+                    Color(0xFF7C3AED).copy(alpha = 0.55f),
+                    Color.Transparent,
+                ),
+                center = Offset(w * 0.10f, h * 0.05f),
+                radius = w * 0.55f,
             ),
             center = Offset(w * 0.10f, h * 0.05f),
             radius = w * 0.55f,
-        ),
-        center = Offset(w * 0.10f, h * 0.05f),
-        radius = w * 0.55f,
-    )
-    // Magenta orb, right.
-    canvas.drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                Color(0xFFD946EF).copy(alpha = 0.32f),
-                Color.Transparent,
+        )
+        // Magenta orb, right.
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(
+                    Color(0xFFD946EF).copy(alpha = 0.32f),
+                    Color.Transparent,
+                ),
+                center = Offset(w * 0.92f, h * 0.30f),
+                radius = w * 0.42f,
             ),
             center = Offset(w * 0.92f, h * 0.30f),
             radius = w * 0.42f,
-        ),
-        center = Offset(w * 0.92f, h * 0.30f),
-        radius = w * 0.42f,
-    )
-    // Blue orb, bottom-left.
-    canvas.drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                Color(0xFF2563EB).copy(alpha = 0.30f),
-                Color.Transparent,
+        )
+        // Blue orb, bottom-left.
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(
+                    Color(0xFF2563EB).copy(alpha = 0.30f),
+                    Color.Transparent,
+                ),
+                center = Offset(w * 0.22f, h * 1.02f),
+                radius = w * 0.50f,
             ),
             center = Offset(w * 0.22f, h * 1.02f),
             radius = w * 0.50f,
-        ),
-        center = Offset(w * 0.22f, h * 1.02f),
-        radius = w * 0.50f,
-    )
-    // Gentle dark wash so text stays readable over the orbs.
-    canvas.drawRect(
-        brush = Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFF0B0912).copy(alpha = 0.15f),
-                Color.Transparent,
-                Color(0xFF0B0912).copy(alpha = 0.35f),
+        )
+        // Gentle dark wash so text stays readable over the orbs.
+        drawRect(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    Color(0xFF0B0912).copy(alpha = 0.15f),
+                    Color.Transparent,
+                    Color(0xFF0B0912).copy(alpha = 0.35f),
+                ),
             ),
-        ),
-        size = Size(w, h),
-    )
+            size = Size(w, h),
+        )
+    }
     return bitmap
 }
 

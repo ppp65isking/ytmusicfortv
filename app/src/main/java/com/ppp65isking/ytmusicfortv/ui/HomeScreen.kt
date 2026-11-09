@@ -47,7 +47,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.ExperimentalFocusRestorerApi
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
@@ -550,7 +549,7 @@ private fun RailItem(
  * title + artist below. Clean hierarchy, generous type and spacing for
  * the couch.
  */
-@OptIn(ExperimentalFocusRestorerApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun ContentRow(
     title: String,
